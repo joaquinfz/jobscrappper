@@ -1,0 +1,18 @@
+<div>
+  <label>Search: </label>
+  <input type="text" [(ngModel)]="search" placeholder="Enter search term">
+</div>
+
+<div>
+  <label>Skills (comma-separated): </label>
+  <input type="text" [(ngModel)]="skills" placeholder="e.g., AWS, SQL">
+</div>
+
+<button (click)="fetchJobOffers()">Get Job Offers</button>
+<button (click)="fetchJobOffersBySkills()">Get Job Offers by Skills</button>
+
+<ul>
+  <li *ngFor="let offer of jobOffers">
+    {{ offer.name }} - {{ offer.company }}
+  </li>
+</ul>

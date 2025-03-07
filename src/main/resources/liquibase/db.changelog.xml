@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1" author="jobOffer">
+        <createTable tableName="job_offers">
+            <column name="id" type="INTEGER" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="rol" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="company" type="text">
+            </column>
+            <column name="headquarters" type="text"/>
+            <column name="contract_type" type="text"/>
+            <column name="offer_location" type="text"/>
+            <column name="offer_url" type="text"/>
+            <column name="salary" type="text"/>
+            <column name="scrapped_from" type="text"/>
+            <column name="full_offer" type="text"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="jobOffer">
+        <createTable tableName="skills">
+            <column name="id" type="INTEGER" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="headquarters" type="name"/>
+            <column name="contract_type" type="info"/>
+            <column name="offer_location" type="ocurrences"/>
+        </createTable>
+    </changeSet>
+
+
+</databaseChangeLog>
