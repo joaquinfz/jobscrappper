@@ -1,0 +1,50 @@
+<div class="container">
+  <h2>Job Search</h2>
+
+  <!-- Search Section -->
+  <div class="search-section">
+    <label for="search">Search:</label>
+    <input id="search" type="text" [(ngModel)]="search" placeholder="Enter job title or keyword">
+  </div>
+
+  <div class="search-section">
+    <label for="skills">Skills (comma-separated):</label>
+    <input id="skills" type="text" [(ngModel)]="skills" placeholder="Enter skills (e.g., Angular, Java)">
+  </div>
+
+  <!-- Buttons for Fetching Job Offers -->
+  <div class="button-group">
+    <button (click)="fetchJobOffers()">Search by Job Title</button>
+    <button (click)="fetchJobOffersBySkills()">Search by Skills</button>
+  </div>
+
+  <!-- Sort Button -->
+  <button class="sort-button" (click)="toggleSortOrder()">
+    Sort by Salary {{ sortAscending ? '⬆️' : '⬇️' }}
+  </button>
+
+  <!-- Job Offers List -->
+  <div *ngIf="jobOffers.length > 0" class="job-info">
+    <ul class="job-list">
+      <li *ngFor="let offer of jobOffers">
+        <div class="job-details">
+          <strong>📌 {{ offer.name }}</strong> - {{ offer.company }}
+          <br>💼 Role: {{ offer.rol }}
+          <br>💰 Salary: ${{ offer.salary }}
+          <br>🏢 Company: {{ offer.company }}
+          <br>🔗 <a [href]="offer.offerUrl" target="_blank">Job Link</a>
+        </div>
+
+        <!-- Skills list inside the offer loop -->
+        <div class="job-skills">
+          🛠️ Skills:
+          <ul>
+            <li *ngFor="let skill of offer.skills">
+              {{ skill }}
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>

@@ -2,6 +2,7 @@ HELP.md
 COMANDOS.txt
 database.db
 target/
+app.module.ts
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

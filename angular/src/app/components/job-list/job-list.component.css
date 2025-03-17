@@ -1,0 +1,187 @@
+.container {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+
+h2 {
+  text-align: center;
+  color: #333;
+}
+
+.search-section {
+  margin-bottom: 10px;
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  transition: 0.3s;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.sort-button {
+  display: block;
+  margin: 10px auto;
+  background-color: #28a745;
+}
+
+.sort-button:hover {
+  background-color: #218838;
+}
+
+/* Job List Styling */
+.job-list {
+  list-style: none;
+  padding: 0;
+}
+
+.job-list li {
+  background: white;
+  padding: 15px;
+  border-radius: 5px;
+  margin: 10px 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Job Information Section */
+.job-info {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+/* Job Details - Bigger Font */
+.job-details {
+  flex: 1;
+  font-size: 18px;  /* Bigger text */
+  font-weight: bold; /* Make it stand out */
+}
+
+/* Job Skills Section - Smaller Font */
+.job-skills {
+  min-width: 120px;
+  padding: 8px;
+  border-left: 2px solid #ddd;
+  background: #eef5ff;
+  border-radius: 5px;
+  margin-left: 15px;
+  font-size: 12px; /* Smaller text */
+  color: #555;
+}
+
+.job-skills ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.job-skills li {
+  font-size: 11px; /* Even smaller for individual skills */
+  color: #007bff;
+  padding: 2px 0;
+}
+
+/* Links */
+a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Skill Filters - Combined with Job List Styles */
+.skill-filters, .selected-skills {
+  margin: 20px 0;
+}
+
+.skill-filters h3, .selected-skills h3 {
+  font-size: 18px;
+  color: #333;
+}
+
+.skill-filters ul, .selected-skills ul {
+  list-style: none;
+  padding: 0;
+}
+
+.skill-filters li, .selected-skills li {
+  margin: 5px 0;
+}
+
+.skill-filters button, .selected-skills button {
+  padding: 5px 10px;
+  margin: 5px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.skill-filters button:hover, .selected-skills button:hover {
+  background-color: #0056b3;
+}
+
+.selected-skills li {
+  background-color: #eef5ff;
+  padding: 5px;
+  border-radius: 4px;
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.selected-skills button {
+  background-color: #dc3545;
+}
+
+.selected-skills button:hover {
+  background-color: #c82333;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .job-list li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .job-skills {
+    width: 100%;
+    border-left: none;
+    border-top: 2px solid #ddd;
+    margin-left: 0;
+    margin-top: 10px;
+  }
+}

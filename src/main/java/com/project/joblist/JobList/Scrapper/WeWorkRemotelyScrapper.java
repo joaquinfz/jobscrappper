@@ -4,6 +4,8 @@ import com.project.joblist.JobList.Entity.JobOffer;
 import com.project.joblist.JobList.Entity.Skill;
 import com.project.joblist.JobList.Repository.JobOfferRepository;
 import com.project.joblist.JobList.Repository.SkillRepository;
+import com.project.joblist.JobList.Scrapper.Builder.WeWorkBuilder;
+import org.antlr.v4.runtime.misc.Pair;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
 import org.jsoup.Connection;
@@ -14,11 +16,11 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.lang.invoke.SerializedLambda;
+import java.lang.reflect.Method;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 @Component
 @AllArgsConstructor
@@ -75,100 +77,76 @@ public class WeWorkRemotelyScrapper implements Scrapper {
             //PARA ELIMINAR EL PRIMER ELEMENTO (ANTES DE LA OFERTA)
             String[] offerArray = Arrays.copyOfRange(preOfferArray, 1, preOfferArray.length);
 
-            String rol;
+
+            HashMap<Consumer<String>, Pair> parameters = new HashMap<>();
+
+
+
+
+            String rol= null;
             String company;
             String headquarters;
             String contractType;
-            String offerLocation;
-            String offerUrl;
+            String offerLocation = null;
+            String offerUrl = null;
             String salary;
             String skills;
             String offerFullUrl;
             Document offerDoc;
+
+            WeWorkBuilder builder = new WeWorkBuilder();
+
+            parameters.put(builder::setRol, new Pair<>(rolStart, rolEnd));
+            parameters.put(builder::setCompany, new Pair<>(companyStart, companyEnd));
+            parameters.put(builder::setHeadquarters, new Pair<>(headquartersStart, headquartersEnd));
+            parameters.put(builder::setContractType, new Pair<>(contractTypeStart, contractTypeEnd));
+            parameters.put(builder::setOfferLocation, new Pair<>(offerLocationStart, offerLocationEnd));
+            parameters.put(builder::setOfferFullUrl, new Pair<>(offerUrlStart, offerUrlEnd));
 
             int count = 0;
             int START_INDEX = 1;
             int START_INDEX_REPEATED_TAG = 2;
             int END_INDEX = 0;
 
-
+            String parameter;
 
 
             for(String offer : offerArray) {
-                //offer = offer.split(offerEnd)[END_INDEX];
-                System.out.println("EMPIEZA OFERTA");
-                //System.out.println(doc);
-                //System.out.println(offer);
-                //System.out.println(offer.contains(contractTypeStart));
-                System.out.println("TERMINA OFERTA");
-                /* String [] roles =  offer.split(rolStart);
-                for(String rolPrueba : roles){
-                    System.out.println("PRUEBA " + rolPrueba + " PRUEBA ");
-                } */
-                rol = offer.split(rolStart)[START_INDEX];
-                rol = rol.split(rolEnd)[END_INDEX];
-                //System.out.println("ROL " + rol + " TERMINA ROL");
 
-                company = offer.split(companyStart)[START_INDEX];
-                company = company.split(companyEnd)[END_INDEX];
-                //System.out.println("COMPANY " + company + " TERMINA COMPANY");
+                for(Map.Entry<Consumer<String>, Pair> entry : parameters.entrySet()) {
+                    //offer = offer.split(offerEnd)[END_INDEX];
+                    //a = start, b = end
 
-                headquarters = offer.split(headquartersStart)[START_INDEX];
-                headquarters = headquarters.split(headquartersEnd)[END_INDEX];
-                //System.out.println("HEADQUARTERS " + headquarters + " TERMINA HEADQUARTERS");
+                    String[] parameterSplit = offer.split((String) entry.getValue().a);
+                    if (parameterSplit.length > 1) {
+                        //Agarro el segundo elemento del split(luego del regex) y le saco el final, donde termina la etiqueta html
+                        parameter = parameterSplit[START_INDEX].split((String) entry.getValue().b)[END_INDEX];
+                        entry.getKey().accept(parameter);
 
-                contractType = offer.split(contractTypeStart)[START_INDEX];
-                contractType = contractType.split(contractTypeEnd)[END_INDEX];
-                System.out.println("CONTRACT " + contractType + " TERMINA CONTRACT");
-
-                offerUrl = offer.split(offerUrlStart)[START_INDEX];
-                offerUrl = offerUrl.split(offerUrlEnd)[END_INDEX];
-                System.out.println("EMPIEZA URL " + offerUrl + " TERMINA URL");
+                        String methodName = getMethodName(entry.getKey());
+                        System.out.println("EMPIEZA " + methodName + ": " + parameter + " TERMINA");
+                    }
 
 
-                //System.out.println("OFFER" + offer);
-                //System.out.println("PRECONTRACT" + preContractType + "CIERRA");
-                //2 PORQUE SE SEPARAN POR EL MISMO REGEX, OFFERLOCATION ES EL SEGUNDO ELEMENTO DEL ARRAY
-                offerLocation = offer.split(offerLocationStart)[START_INDEX_REPEATED_TAG];
-                offerLocation = offerLocation.split(offerLocationEnd)[END_INDEX];
-                System.out.println("OFFERLOCATION " + offerLocation + " TERMINA OFFERLOCATION");
-
+                }
 
                 offerFullUrl = webUrl + offerUrl;
-               /* offerDoc = Jsoup.connect(offerFullUrl)
-                        .method(Connection.Method.POST)
-                        .followRedirects(true)
-                        .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
-                        .referrer("http://www.google.com")
-                        .get();
-
-                System.out.println(offerDoc);
-
-                String rol;
-            String company;
-            String headquarters;
-            String contractType;
-            String offerLocation;
-            String offerUrl;
-                */
 
 
                 JobOffer jobOffer = JobOffer.builder()
-                        .rol(rol)
-                        .company(company)
-                        .headquarters(headquarters)
-                        .contractType(contractType)
-                        .offerLocation(offerLocation)
+                        .rol(builder.getRol())
+                        .company(builder.getCompany())
+                        .headquarters(builder.getHeadquarters())
+                        .contractType(builder.getContractType())
+                        .offerLocation(builder.getOfferLocation())
                         .scrappedFrom("WeWorkRemotely")
-                        .offerUrl(offerFullUrl)
+                        .offerUrl(builder.getOfferFullUrl())
                         .build();
 
-                if(isNewJobOffer(jobOffer)){
+                if (isNewJobOffer(jobOffer)) {
                     jobOffers.add(jobOffer);
                 }
-
-
-                //System.out.println(documentPending.contains("div"));
+                    //System.out.println(documentPending.contains("div"));
             }
 
 
@@ -275,5 +253,19 @@ public class WeWorkRemotelyScrapper implements Scrapper {
         return skill;
     }
 
+
+    private static String getMethodName(Consumer<String> setter) {
+        try {
+            // Get the SerializedLambda from the method reference
+            Method writeReplace = setter.getClass().getDeclaredMethod("writeReplace");
+            writeReplace.setAccessible(true);
+            SerializedLambda lambda = (SerializedLambda) writeReplace.invoke(setter);
+
+            return lambda.getImplMethodName(); // Returns something like "setRol"
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "UnknownMethod";
+        }
+    }
 
 }
